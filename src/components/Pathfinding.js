@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Node from "./Node";
-import "./Pathfinding.css"
+import Astar from "../astarAlgorithm/astar";
+import "./Pathfinding.css";
 
 const rows = 10;
 const cols = 25;
@@ -12,6 +13,7 @@ const NODE_END_COL = cols - 1;
 
 const Pathfinding = () => {
     const [Grid, setGrid] = useState([]);
+    const [Path, setPath] = useState([]);
 
     useEffect(() => {
         initializeGrid();
@@ -30,6 +32,12 @@ const Pathfinding = () => {
         setGrid(grid);
 
         addNeighbours(grid);
+
+        const startNode = grid[NODE_START_ROW][NODE_START_COL];
+        const endNode = grid[NODE_END_ROW][NODE_END_COL];
+        
+        let path = Astar(startNode, endNode);
+        setPath(path);
     };
 
     //Create the spot 
@@ -60,14 +68,14 @@ const Pathfinding = () => {
         this.f = 0;
         this.h = 0;
         this.neighbours = [];
-        this.previous = 0;
+        this.previous = undefined;
         this.addneighbours = function(grid){
             let i = this.x;
             let j = this.y;
             if(i > 0) this.neighbours.push(grid[i - 1][j]);
             if(i < rows - 1) this.neighbours.push(grid[i + 1][j]);
             if(j > 0) this.neighbours.push(grid[i][j - 1]);
-            if(i < cols - 1) this.neighbours.push(grid[i][j + 1]);
+            if(j < cols - 1) this.neighbours.push(grid[i][j + 1]);
         };
     }
 
@@ -95,7 +103,7 @@ const Pathfinding = () => {
     return (
         <div className="Wrapper">
             <h1>Pathfinding Component</h1>
-            {gridWithNode} 
+            {gridWithNode}
         </div>
     );
 };
