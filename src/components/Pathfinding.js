@@ -14,7 +14,8 @@ const NODE_END_COL = cols - 1;
 const Pathfinding = () => {
     const [Grid, setGrid] = useState([]);
     const [Path, setPath] = useState([]);
-
+    const [VisitedNodes, setVisitedNodes] = useState([]);
+    
     useEffect(() => {
         initializeGrid();
     }, []);
@@ -37,7 +38,8 @@ const Pathfinding = () => {
         const endNode = grid[NODE_END_ROW][NODE_END_COL];
         
         let path = Astar(startNode, endNode);
-        setPath(path);
+        setPath(path.path);
+        setVisitedNodes(path.visitedNodes);
     };
 
     //Create the spot 
@@ -99,9 +101,35 @@ const Pathfinding = () => {
             })}
         </div>
     );
+    
+    const visualizeShortestPath = (shortestPathNodes) => {
+        for(let i = 0; i < shortestPathNodes.length; i++){
+            setTimeout(() => {
+                const node = shortestPathNodes[i];
+                document.getElementById(`node-${node.x}-${node.y}`).className = "node node-shortest-path";
+            }, 10 * i);
+        }
+    }
+
+    const visualizePath = () => {
+        for(let i = 0; i <= VisitedNodes.length; i++){
+            if(i === VisitedNodes.length){
+                setTimeout(() => {
+                    visualizeShortestPath(Path);
+                }, 15 * i);
+            }
+            else{
+                setTimeout(() => {
+                    const node = VisitedNodes[i];
+                    document.getElementById(`node-${node.x}-${node.y}`).className = "node node-visited";
+                }, 15 * i);
+            }
+        }
+    }
 
     return (
         <div className="Wrapper">
+            <button onClick={visualizePath}>Visualize Path</button>
             <h1>Pathfinding Component</h1>
             {gridWithNode}
         </div>

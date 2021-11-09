@@ -2,6 +2,7 @@ function Astar(startNode, endNode){
     let openSet = [];
     let closedSet = [];
     let path = [];
+    let visitedNodes = [];
 
     openSet.push(startNode);
 
@@ -14,6 +15,7 @@ function Astar(startNode, endNode){
         }
 
         let current = openSet[leastIndex];
+        visitedNodes.push(current);
 
         if(current === endNode){
             let temp = current;
@@ -23,8 +25,8 @@ function Astar(startNode, endNode){
                 path.push(temp.previous);
                 temp = temp.previous;
             }
-            
-            return path;
+
+            return {path, visitedNodes};
         }
 
         openSet = openSet.filter((elt) => elt !== current);
@@ -57,7 +59,7 @@ function Astar(startNode, endNode){
         }
     }
 
-    return {path, error: "There is no path!"};
+    return {path, visitedNodes, error: "There is no path!"};
 }
 
 function heruistic(a, b){
