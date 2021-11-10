@@ -3,8 +3,8 @@ import Node from "./Node";
 import Astar from "../astarAlgorithm/astar";
 import "./Pathfinding.css";
 
-const rows = 10;
-const cols = 25;
+const rows = 25;
+const cols = 30;
 
 const NODE_START_ROW = 0;
 const NODE_START_COL = 0;
@@ -36,8 +36,12 @@ const Pathfinding = () => {
 
         const startNode = grid[NODE_START_ROW][NODE_START_COL];
         const endNode = grid[NODE_END_ROW][NODE_END_COL];
+    
+        startNode.isWall = false;
+        endNode.isWall = false;
         
         let path = Astar(startNode, endNode);
+    
         setPath(path.path);
         setVisitedNodes(path.visitedNodes);
     };
@@ -70,6 +74,10 @@ const Pathfinding = () => {
         this.f = 0;
         this.h = 0;
         this.neighbours = [];
+        this.isWall = false;
+        if(Math.random(1) < 0.2){
+            this.isWall = true;
+        }
         this.previous = undefined;
         this.addneighbours = function(grid){
             let i = this.x;
@@ -87,13 +95,14 @@ const Pathfinding = () => {
                 return (
                     <div key={rowIndex} className="rowWrapper">
                         {row.map((col, colIndex) => {
-                            const {isStart, isEnd} = col;
+                            const {isStart, isEnd, isWall} = col;
                             return <Node 
                                         key={colIndex} 
                                         isStart={isStart} 
                                         isEnd={isEnd} 
                                         row={rowIndex} 
                                         col={colIndex}
+                                        isWall={isWall}
                                     />;
                         })}
                     </div>
